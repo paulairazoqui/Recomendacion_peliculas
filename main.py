@@ -13,22 +13,22 @@ app = FastAPI()
 # Ruta para la raíz del servidor
 @app.get("/")
 async def read_root():
-    return {"message": "¡Bienvenido a la API de Recomendación de Películas de Paula!"}
+    return {"¡Te doy la bienvenida a la API de Recomendación de Películas de Paula!"}
 
 # Endpoint para cantidad_filmaciones_mes
 @app.get("/cantidad_filmaciones_mes/")
 async def cantidad_filmaciones_mes_endpoint(mes: str):
-    return {"resultado": cantidad_filmaciones_mes(mes)}
+    return {cantidad_filmaciones_mes(mes)}
 
 # Endpoint para cantidad_filmaciones_dia
 @app.get("/cantidad_filmaciones_dia/")
 async def cantidad_filmaciones_dia_endpoint(dia: str):
-    return {"resultado": cantidad_filmaciones_dia(dia)}
+    return {cantidad_filmaciones_dia(dia)}
 
 # Endpoint para score_titulo
 @app.get("/score_titulo/")
 async def score_titulo_endpoint(titulo: str):
-    return {"resultado": score_titulo(titulo)}
+    return {score_titulo(titulo)}
 
 # Endpoint para votos_titulo
 @app.get("/votos_titulo/")
@@ -38,9 +38,9 @@ async def votos_titulo_endpoint(titulo: str):
 # Endpoint para get_actor
 @app.get("/get_actor/")
 async def get_actor_endpoint(nombre_actor: str):
-    return {"resultado": get_actor(nombre_actor)}
+    return {get_actor(nombre_actor)}
 
 # Endpoint para get_director
 @app.get("/get_director/")
 async def get_director_endpoint(nombre_director: str):
-    return {"resultado": get_director(nombre_director)}
+    return {get_director(nombre_director)}

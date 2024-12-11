@@ -15,26 +15,32 @@ app = FastAPI()
 async def read_root():
     return {"message": "¡Bienvenido a la API de Recomendación de Películas!"}
 
+# Endpoint para cantidad_filmaciones_mes
 @app.get("/cantidad_filmaciones_mes/")
-def get_cantidad_filmaciones_mes(mes: str):
-    return {"result": cantidad_filmaciones_mes(mes)}
+async def cantidad_filmaciones_mes_endpoint(mes: str):
+    return {"resultado": cantidad_filmaciones_mes(mes)}
 
+# Endpoint para cantidad_filmaciones_dia
 @app.get("/cantidad_filmaciones_dia/")
-def get_cantidad_filmaciones_dia(dia: str):
-    return {"result": cantidad_filmaciones_dia(dia)}
+async def cantidad_filmaciones_dia_endpoint(dia: str):
+    return {"resultado": cantidad_filmaciones_dia(dia)}
 
+# Endpoint para score_titulo
 @app.get("/score_titulo/")
-def get_score_titulo(titulo: str):
-    return {"result": score_titulo(titulo)}
+async def score_titulo_endpoint(titulo: str):
+    return {"resultado": score_titulo(titulo)}
 
+# Endpoint para votos_titulo
 @app.get("/votos_titulo/")
-def get_votos_titulo(titulo: str):
-    return {"result": votos_titulo(titulo)}
+async def votos_titulo_endpoint(titulo: str):
+    return {"resultado": votos_titulo(titulo)}
 
-@app.get("/actor/")
-def get_actor_info(nombre_actor: str):
-    return {"result": get_actor(nombre_actor)}
+# Endpoint para get_actor
+@app.get("/get_actor/")
+async def get_actor_endpoint(nombre_actor: str):
+    return {"resultado": get_actor(nombre_actor)}
 
-@app.get("/director/")
-def get_director_info(nombre_director: str):
-    return {"result": get_director(nombre_director)}
+# Endpoint para get_director
+@app.get("/get_director/")
+async def get_director_endpoint(nombre_director: str):
+    return {"resultado": get_director(nombre_director)}

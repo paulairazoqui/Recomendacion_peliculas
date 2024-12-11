@@ -10,6 +10,11 @@ from utils import (
 
 app = FastAPI()
 
+# Ruta para la raíz del servidor
+@app.get("/")
+async def read_root():
+    return {"message": "¡Bienvenido a la API de Recomendación de Películas!"}
+
 @app.get("/cantidad_filmaciones_mes/")
 def get_cantidad_filmaciones_mes(mes: str):
     return {"result": cantidad_filmaciones_mes(mes)}

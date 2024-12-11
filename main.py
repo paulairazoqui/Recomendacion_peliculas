@@ -13,7 +13,7 @@ app = FastAPI()
 # Ruta para la raíz del servidor
 @app.get("/")
 async def read_root():
-    return {"message": "¡Bienvenido a la API de Recomendación de Películas!"}
+    return {"message": "¡Bienvenido a la API de Recomendación de Películas de Paula!"}
 
 # Endpoint para cantidad_filmaciones_mes
 @app.get("/cantidad_filmaciones_mes/")

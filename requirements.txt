@@ -107,7 +107,7 @@ PyPDF2==3.0.1
 pyspark==3.5.3
 python-dateutil==2.8.2
 pytz==2024.1
-# pywin32==305
+pywin32==306
 PyYAML==6.0.2
 pyzmq==24.0.1
 quickjs==1.19.4
@@ -146,5 +146,5 @@ virtualenv==20.26.3
 wasmtime==27.0.1
 wcwidth==0.2.5
 widgetsnbextension==4.0.13
-# wordnet==0.0.1b2
+wordnet==0.0.1b1
 xgboost==2.1.2

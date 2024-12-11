@@ -2,8 +2,17 @@ import pandas as pd
 import unicodedata
 import ast
 
-movies = pd.read_csv(r'Datasets\transformed_movies.csv')
-credits = pd.read_csv(r'Datasets\reduced_credits.csv')
+movies = pd.read_csv('Datasets/transformed_movies.csv')
+credits = pd.read_csv('Datasets/reduced_credits.csv')
+
+# Función para eliminar acentos
+def eliminar_acentos(texto):
+    return ''.join(
+        char for char in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(char) != 'Mn'
+    )
+
+
 
 def cantidad_filmaciones_mes(Mes):
     # Diccionario para convertir el mes en español al número correspondiente
@@ -27,15 +36,8 @@ def cantidad_filmaciones_mes(Mes):
     return f"{cantidad} películas fueron estrenadas en el mes de {Mes.capitalize()}."
 
 
+
 def cantidad_filmaciones_dia(Dia):
-    
-    # Función para eliminar acentos
-    def eliminar_acentos(texto):
-        return ''.join(
-            char for char in unicodedata.normalize('NFD', texto)
-            if unicodedata.category(char) != 'Mn'
-        )
-    
     # Diccionario para convertir el día en español al número correspondiente
     dias = {
         "lunes": 0, "martes": 1, "miercoles": 2, "jueves": 3,
@@ -57,6 +59,8 @@ def cantidad_filmaciones_dia(Dia):
     
     # Retornar el mensaje
     return f"{cantidad} películas fueron estrenadas en los días {Dia.capitalize()}."
+
+
 
 def score_titulo(titulo_de_la_filmacion):
     # Función para eliminar acentos
@@ -84,14 +88,8 @@ def score_titulo(titulo_de_la_filmacion):
     return f"La película '{titulo}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
 
 
+
 def votos_titulo(titulo_de_la_filmacion):
-    # Función para eliminar acentos
-    def eliminar_acentos(texto):
-        return ''.join(
-            char for char in unicodedata.normalize('NFD', texto)
-            if unicodedata.category(char) != 'Mn'
-        )
-    
     titulo_normalizado = eliminar_acentos(titulo_de_la_filmacion.lower())
 
     # Buscar la película por título (ignorando mayúsculas/minúsculas y acentos)
@@ -115,14 +113,8 @@ def votos_titulo(titulo_de_la_filmacion):
     return f"La película '{titulo}' fue estrenada en el año {int(anio)}. La misma cuenta con un total de {int(votos)} valoraciones, con un promedio de {promedio:.2f}."
 
 
+
 def get_actor(nombre_actor):
-    # Función para eliminar acentos
-    def eliminar_acentos(texto):
-        return ''.join(
-            char for char in unicodedata.normalize('NFD', texto)
-            if unicodedata.category(char) != 'Mn'
-        )
-    
     # Convertir las strings de 'actors' en listas reales
     credits['actors'] = credits['actors'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
     
@@ -160,14 +152,8 @@ def get_actor(nombre_actor):
     )
 
 
-def get_director(nombre_director):
-    # Función para eliminar acentos
-    def eliminar_acentos(texto):
-        return ''.join(
-            char for char in unicodedata.normalize('NFD', texto)
-            if unicodedata.category(char) != 'Mn'
-        )
 
+def get_director(nombre_director):
     # Normalizar el nombre del director ingresado
     director_normalizado = eliminar_acentos(nombre_director.lower())
     

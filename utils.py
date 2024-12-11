@@ -1,9 +1,17 @@
 import pandas as pd
 import unicodedata
 import ast
+import os
 
-movies = pd.read_csv('Datasets/transformed_movies.csv')
-credits = pd.read_csv('Datasets/reduced_credits.csv')
+
+# Ruta relativa a los datasets
+movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+credits_path = os.path.join('Datasets', 'reduced_credits.csv')
+
+# Cargar los datasets
+movies = pd.read_csv(movies_path)
+credits = pd.read_csv(credits_path)
+
 
 # Función para eliminar acentos
 def eliminar_acentos(texto):

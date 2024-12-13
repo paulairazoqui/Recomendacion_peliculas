@@ -197,7 +197,7 @@ def get_director(nombre_director):
     )
 
 # Cargar datasets y archivos necesarios
-combined_features = np.load(r'Datasets/combined_features.npy')
+combined_features = np.load("Datasets/combined_features_compressed.npz")['arr_0']
 
 # Cargar el LabelEncoder guardado
 with open('label_encoder.pkl', 'rb') as file:

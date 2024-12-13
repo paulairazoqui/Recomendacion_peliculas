@@ -235,9 +235,6 @@ def get_director(nombre_director):
 
 
 def recomendacion(titulo: str):
-    """
-    Función que recibe el título de una película y devuelve las 5 más similares.
-    """
     # Cargar datasets
     movies = pd.read_csv("Datasets/transformed_movies.csv")
     combined_features = np.load("Datasets/combined_features_compressed.npz")['arr_0']

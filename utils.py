@@ -25,8 +25,14 @@ def eliminar_acentos(texto):
 
 
 def cantidad_filmaciones_mes(Mes):
+    # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+        
     # Diccionario para convertir el mes en español al número correspondiente
-    meses = {
+        meses = {
         "enero": 1, "febrero": 2, "marzo": 3, "abril": 4,
         "mayo": 5, "junio": 6, "julio": 7, "agosto": 8,
         "septiembre": 9, "octubre": 10, "noviembre": 11, "diciembre": 12
@@ -48,6 +54,12 @@ def cantidad_filmaciones_mes(Mes):
 
 
 def cantidad_filmaciones_dia(Dia):
+    # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+    
     # Diccionario para convertir el día en español al número correspondiente
     dias = {
         "lunes": 0, "martes": 1, "miercoles": 2, "jueves": 3,
@@ -73,6 +85,11 @@ def cantidad_filmaciones_dia(Dia):
 
 
 def score_titulo(titulo_de_la_filmacion):
+    # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+    
     # Normalizar el titulo ingresado
     titulo_normalizado = eliminar_acentos(titulo_de_la_filmacion.lower())
 
@@ -92,8 +109,12 @@ def score_titulo(titulo_de_la_filmacion):
     return f"La película '{titulo}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
 
 
- 
 def votos_titulo(titulo_de_la_filmacion):
+    # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
     titulo_normalizado = eliminar_acentos(titulo_de_la_filmacion.lower())
 
     # Buscar la película por título (ignorando mayúsculas/minúsculas y acentos)
@@ -119,6 +140,14 @@ def votos_titulo(titulo_de_la_filmacion):
 
 
 def get_actor(nombre_actor):
+    # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    credits_path = os.path.join('Datasets', 'reduced_credits.csv')
+
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+    credits = pd.read_csv(credits_path)
+
     # Convertir las strings de 'actors' en listas reales
     credits['actors'] = credits['actors'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
     
@@ -158,6 +187,14 @@ def get_actor(nombre_actor):
 
 
 def get_director(nombre_director):
+        # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    credits_path = os.path.join('Datasets', 'reduced_credits.csv')
+
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+    credits = pd.read_csv(credits_path)
+
     # Normalizar el nombre del director ingresado
     director_normalizado = eliminar_acentos(nombre_director.lower())
     
@@ -196,17 +233,20 @@ def get_director(nombre_director):
         "Detalle de sus películas:\n" + "\n".join(peliculas_info)
     )
 
-# Cargar datasets y archivos necesarios
-combined_features = np.load("Datasets/combined_features_compressed.npz")['arr_0']
 
-# Cargar el LabelEncoder guardado
-with open('label_encoder.pkl', 'rb') as file:
-    le = pickle.load(file)
 
 def recomendacion(titulo: str):
-    """
-    Función que recibe el título de una película y devuelve las 5 más similares.
-    """
+    # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    combined_features = np.load("Datasets/combined_features_compressed.npz")['arr_0']
+
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+
+    # Cargar el LabelEncoder guardado
+    with open('label_encoder.pkl', 'rb') as file:
+    le = pickle.load(file)
+
     # Encuentra el índice de la película en el DataFrame
     try:
         idx = movies[movies['title'].str.lower() == titulo.lower()].index[0]

@@ -235,13 +235,17 @@ def get_director(nombre_director):
 
 
 def recomendacion(titulo: str):
-     # Ruta relativa a los datasets
+    # Ruta relativa al archivo
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
     combined_features_path = os.path.join('Datasets', 'combined_features_compressed.npz')
-    # Carga de los datasets
-    movies = pd.read_csv(movies_path)
-    combined_features = np.load(combined_features_path)['arr_0']
 
+    # Cargar solo las columnas necesarias
+    columnas_necesarias = ['title', 'popularity', 'collection', 'genres_encoded']
+    movies = pd.read_csv(movies_path, usecols=columnas_necesarias)
+
+    # Cargar las características combinadas
+    combined_features = np.load(combined_features_path)['arr_0']
+    
     # Encuentra el índice de la película en el DataFrame
     try:
         idx = movies[movies['title'].str.lower() == titulo.lower()].index[0]

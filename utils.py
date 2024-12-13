@@ -92,7 +92,7 @@ def score_titulo(titulo_de_la_filmacion):
     return f"La película '{titulo}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
 
 
-
+ 
 def votos_titulo(titulo_de_la_filmacion):
     titulo_normalizado = eliminar_acentos(titulo_de_la_filmacion.lower())
 

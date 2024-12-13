@@ -248,7 +248,7 @@ def recomendacion(titulo: str):
     recomendaciones = [
         {
             "titulo": movies.iloc[i]['title'],
-            "similitud": round(float(similitudes[0][i]),2)
+            "similitud": round(float(similitudes[0][i]),3)
         }
         for i in indices_similares
     ]

@@ -5,7 +5,8 @@ from utils import (
     score_titulo,
     votos_titulo,
     get_actor,
-    get_director
+    get_director,
+    recomendacion
 )
 
 app = FastAPI()
@@ -44,3 +45,8 @@ async def get_actor_endpoint(nombre_actor: str):
 @app.get("/get_director/")
 async def get_director_endpoint(nombre_director: str):
     return {get_director(nombre_director)}
+
+@app.get("/recomendacion/")
+async def recomendacion_endpoint(titulo: str):
+    resultado = recomendacion(titulo)
+    return {"resultados": resultado}

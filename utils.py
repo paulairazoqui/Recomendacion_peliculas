@@ -2,13 +2,16 @@ import pandas as pd
 import unicodedata
 import ast
 import os
+import numpy as np
+import pickle
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 # Ruta relativa a los datasets
 movies_path = os.path.join('Datasets', 'transformed_movies.csv')
 credits_path = os.path.join('Datasets', 'reduced_credits.csv')
 
-# Cargar los datasets
+# Carga de los datasets
 movies = pd.read_csv(movies_path)
 credits = pd.read_csv(credits_path)
 
@@ -19,7 +22,6 @@ def eliminar_acentos(texto):
         char for char in unicodedata.normalize('NFD', texto)
         if unicodedata.category(char) != 'Mn'
     )
-
 
 
 def cantidad_filmaciones_mes(Mes):
@@ -33,14 +35,14 @@ def cantidad_filmaciones_mes(Mes):
     # Convertir el mes a minúscula y obtener su número
     mes_numero = meses.get(Mes.lower())
     
-    # Validar si el mes es válido
+    # Validar el mes
     if mes_numero is None:
         return f"'{Mes.capitalize()}' no es un mes válido. Por favor, ingrese un mes en español."
     
     # Contar películas estrenadas en el mes
     cantidad = movies[movies['release_month'] == mes_numero].shape[0]
     
-    # Retornar el mensaje
+    # Devolver el mensaje
     return f"{cantidad} películas fueron estrenadas en el mes de {Mes.capitalize()}."
 
 
@@ -58,26 +60,20 @@ def cantidad_filmaciones_dia(Dia):
     # Obtener el número correspondiente al día
     dias_numero = dias.get(Dia_normalizado)
     
-    # Validar si el día ingresado es válido
+    # Validar el día ingresado
     if dias_numero is None:
         return f"'{Dia.capitalize()}' no es un día válido. Por favor, ingrese un día en español."
     
     # Contar películas estrenadas en el día
     cantidad = movies[movies['release_dow'] == dias_numero].shape[0]
     
-    # Retornar el mensaje
+    # Devolver el mensaje
     return f"{cantidad} películas fueron estrenadas en los días {Dia.capitalize()}."
 
 
 
 def score_titulo(titulo_de_la_filmacion):
-    # Función para eliminar acentos
-    def eliminar_acentos(texto):
-        return ''.join(
-            char for char in unicodedata.normalize('NFD', texto)
-            if unicodedata.category(char) != 'Mn'
-        )
-    
+    # Normalizar el titulo ingresado
     titulo_normalizado = eliminar_acentos(titulo_de_la_filmacion.lower())
 
     # Buscar la película por título (ignorando mayúsculas/minúsculas)
@@ -199,3 +195,54 @@ def get_director(nombre_director):
         f"El director {nombre_director} ha tenido un éxito total medido en un retorno de {total_return:.2f}.\n"
         "Detalle de sus películas:\n" + "\n".join(peliculas_info)
     )
+
+# Cargar datasets y archivos necesarios
+combined_features = np.load(r'Datasets/combined_features.npy')
+
+# Cargar el LabelEncoder guardado
+with open('label_encoder.pkl', 'rb') as file:
+    le = pickle.load(file)
+
+def recomendacion(titulo: str):
+    """
+    Función que recibe el título de una película y devuelve las 5 más similares.
+    """
+    # Encuentra el índice de la película en el DataFrame
+    try:
+        idx = movies[movies['title'].str.lower() == titulo.lower()].index[0]
+    except IndexError:
+        return [{"error": f"La película '{titulo}' no se encuentra en el dataset."}]
+
+    # Calcular la similitud de coseno entre la película seleccionada y todas las demás
+    similitudes = cosine_similarity(combined_features[idx].reshape(1, -1), combined_features)
+
+    # Ordenar las películas por similitud (exceptuando la película actual)
+    indices_similares = similitudes[0].argsort()[::-1][1:6]  # Toma las 5 más similares, excluyendo la misma
+
+    # Separar películas en la misma colección
+    pelicula_base_coleccion = movies.iloc[idx]['collection']
+    recomendaciones = []
+
+    for i in indices_similares:
+        titulo_recomendado = movies.iloc[i]['title']
+        similitud = float(similitudes[0][i])
+        coleccion = movies.iloc[i]['collection']
+
+        # Decodificar géneros de la película
+        generos_codificados = movies.iloc[i]['genres_encoded']
+        if isinstance(generos_codificados, str):
+            generos_codificados = eval(generos_codificados)
+        if isinstance(generos_codificados, list):
+            generos = ", ".join(le.inverse_transform(generos_codificados))
+        else:
+            generos = "Género desconocido"
+
+        # Agregar la recomendación con detalles
+        recomendaciones.append({
+            "titulo": titulo_recomendado,
+            "generos": generos,
+            "similitud": similitud,
+            "coleccion": coleccion if coleccion == pelicula_base_coleccion else "Sin colección"
+        })
+
+    return recomendaciones

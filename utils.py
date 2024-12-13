@@ -3,8 +3,8 @@ import unicodedata
 import ast
 import os
 import numpy as np
-import pickle
 from sklearn.metrics.pairwise import cosine_similarity
+
 
 
 # Ruta relativa a los datasets
@@ -234,18 +234,13 @@ def get_director(nombre_director):
     )
 
 
-
 def recomendacion(titulo: str):
-    # Ruta relativa a los datasets
-    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    """
+    Función que recibe el título de una película y devuelve las 5 más similares.
+    """
+    # Cargar datasets
+    movies = pd.read_csv("Datasets/transformed_movies.csv")
     combined_features = np.load("Datasets/combined_features_compressed.npz")['arr_0']
-
-    # Carga de los datasets
-    movies = pd.read_csv(movies_path)
-
-    # Cargar el LabelEncoder guardado
-    with open('label_encoder.pkl', 'rb') as file:
-        le = pickle.load(file)
 
     # Encuentra el índice de la película en el DataFrame
     try:
@@ -259,30 +254,13 @@ def recomendacion(titulo: str):
     # Ordenar las películas por similitud (exceptuando la película actual)
     indices_similares = similitudes[0].argsort()[::-1][1:6]  # Toma las 5 más similares, excluyendo la misma
 
-    # Separar películas en la misma colección
-    pelicula_base_coleccion = movies.iloc[idx]['collection']
-    recomendaciones = []
-
-    for i in indices_similares:
-        titulo_recomendado = movies.iloc[i]['title']
-        similitud = float(similitudes[0][i])
-        coleccion = movies.iloc[i]['collection']
-
-        # Decodificar géneros de la película
-        generos_codificados = movies.iloc[i]['genres_encoded']
-        if isinstance(generos_codificados, str):
-            generos_codificados = eval(generos_codificados)
-        if isinstance(generos_codificados, list):
-            generos = ", ".join(le.inverse_transform(generos_codificados))
-        else:
-            generos = "Género desconocido"
-
-        # Agregar la recomendación con detalles
-        recomendaciones.append({
-            "titulo": titulo_recomendado,
-            "generos": generos,
-            "similitud": similitud,
-            "coleccion": coleccion if coleccion == pelicula_base_coleccion else "Sin colección"
-        })
+    # Generar la lista de recomendaciones
+    recomendaciones = [
+        {
+            "titulo": movies.iloc[i]['title'],
+            "similitud": float(similitudes[0][i])
+        }
+        for i in indices_similares
+    ]
 
     return recomendaciones

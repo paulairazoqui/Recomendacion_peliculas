@@ -6,16 +6,6 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-
-# Ruta relativa a los datasets
-movies_path = os.path.join('Datasets', 'transformed_movies.csv')
-credits_path = os.path.join('Datasets', 'reduced_credits.csv')
-
-# Carga de los datasets
-movies = pd.read_csv(movies_path)
-credits = pd.read_csv(credits_path)
-
-
 # Función para eliminar acentos
 def eliminar_acentos(texto):
     return ''.join(
@@ -81,7 +71,6 @@ def cantidad_filmaciones_dia(Dia):
     
     # Devolver el mensaje
     return f"{cantidad} películas fueron estrenadas en los días {Dia.capitalize()}."
-
 
 
 def score_titulo(titulo_de_la_filmacion):

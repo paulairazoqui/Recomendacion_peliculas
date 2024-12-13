@@ -235,9 +235,12 @@ def get_director(nombre_director):
 
 
 def recomendacion(titulo: str):
-    # Cargar datasets
-    movies = pd.read_csv("Datasets/transformed_movies.csv")
-    combined_features = np.load("Datasets/combined_features_compressed.npz")['arr_0']
+     # Ruta relativa a los datasets
+    movies_path = os.path.join('Datasets', 'transformed_movies.csv')
+    combined_features_path = os.path.join('Datasets', 'combined_features_compressed.npz')
+    # Carga de los datasets
+    movies = pd.read_csv(movies_path)
+    combined_features = np.load(combined_features_path)['arr_0']
 
     # Encuentra el índice de la película en el DataFrame
     try:

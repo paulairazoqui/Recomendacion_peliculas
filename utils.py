@@ -245,7 +245,7 @@ def recomendacion(titulo: str):
 
     # Cargar el LabelEncoder guardado
     with open('label_encoder.pkl', 'rb') as file:
-    le = pickle.load(file)
+        le = pickle.load(file)
 
     # Encuentra el índice de la película en el DataFrame
     try:

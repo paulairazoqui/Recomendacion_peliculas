@@ -237,7 +237,7 @@ def get_director(nombre_director):
 def recomendacion(titulo: str):
     # Ruta relativa al archivo
     movies_path = os.path.join('Datasets', 'movies_reducido.csv')
-    combined_features_path = os.path.join('Datasets', 'combined_features_compressed.npz')
+    combined_features_path = os.path.join('Datasets', 'combined_features_optimized.npz')
 
     # Cargar las bases de datos
     movies = pd.read_csv(movies_path)

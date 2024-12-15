@@ -104,6 +104,8 @@ def votos_titulo(titulo_de_la_filmacion):
     
     # Carga de los datasets
     movies = pd.read_csv(movies_path)
+
+    # Normalizar el título
     titulo_normalizado = eliminar_acentos(titulo_de_la_filmacion.lower())
 
     # Buscar la película por título (ignorando mayúsculas/minúsculas y acentos)
@@ -226,20 +228,30 @@ def get_director(nombre_director):
 def recomendacion(titulo: str):
     # Ruta relativa al archivo
     movies_path = os.path.join('Datasets', 'movies_reduced.csv')
-    combined_features_path = os.path.join('Datasets', 'movies_features.npz')
+    movies_features_path = os.path.join('Datasets', 'movies_features.npz')
 
     # Cargar las bases de datos
     movies = pd.read_csv(movies_path)
-    combined_features = np.load(combined_features_path)['arr_0']
-    
-    # Encuentra el índice de la película en el DataFrame
+    features = np.load(movies_features_path)['arr_0']
+
+    # Crear una columna de títulos normalizados en el dataset
+    movies['normalized_title'] = movies['title'].apply(lambda x: eliminar_acentos(x.lower().strip()))
+
+    # Normalizar el título ingresado
+    titulo_normalizado = eliminar_acentos(titulo.lower().strip())
+    print(f"Título normalizado ingresado: {titulo_normalizado}")
+
+    # Verificar los títulos normalizados en el dataset
+    print(movies['normalized_title'].head())
+
+    # Buscar el índice de la película usando el título normalizado
     try:
-        idx = movies[movies['title'].str.lower() == titulo.lower()].index[0]
+        idx = movies[movies['normalized_title'] == titulo_normalizado].index[0]
     except IndexError:
         return [{"error": f"La película '{titulo}' no se encuentra en el dataset."}]
 
     # Calcular la similitud de coseno entre la película seleccionada y todas las demás
-    similitudes = cosine_similarity(combined_features[idx].reshape(1, -1), combined_features)
+    similitudes = cosine_similarity(features[idx].reshape(1, -1), features)
 
     # Ordenar las películas por similitud (exceptuando la película actual)
     indices_similares = similitudes[0].argsort()[::-1][1:6]  # Toma las 5 más similares, excluyendo la misma
@@ -248,7 +260,7 @@ def recomendacion(titulo: str):
     recomendaciones = [
         {
             "titulo": movies.iloc[i]['title'],
-            "similitud": round(float(similitudes[0][i]),3)
+            "similitud": round(float(similitudes[0][i]), 3)
         }
         for i in indices_similares
     ]

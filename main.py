@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI # type: ignore
 from utils import (
     cantidad_filmaciones_mes,
     cantidad_filmaciones_dia,

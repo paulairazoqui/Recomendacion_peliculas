@@ -1,9 +1,9 @@
-import pandas as pd
+import pandas as pd # type: ignore
 import unicodedata
 import ast
 import os
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np # type: ignore
+from sklearn.metrics.pairwise import cosine_similarity # type: ignore
 
 
 # Función para eliminar acentos

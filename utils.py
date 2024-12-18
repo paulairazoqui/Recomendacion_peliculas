@@ -4,7 +4,6 @@ import ast
 import os
 import numpy as np # type: ignore
 from sklearn.metrics.pairwise import cosine_similarity # type: ignore
-from sklearn.preprocessing import MultiLabelBinarizer
 
 
 # Función para eliminar acentos

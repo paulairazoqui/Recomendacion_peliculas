@@ -87,7 +87,7 @@ def score_titulo(titulo_de_la_filmacion):
     
     # Validar si se encontró la película
     if pelicula.empty:
-        return f"No se encontró una película con el título '{titulo_de_la_filmacion}'."
+        return f"No se encontró una película con el título '{titulo_de_la_filmacion.capitalize()}'."
     
     # Obtener los valores de título, año y score
     titulo = pelicula.iloc[0]['title']
@@ -95,7 +95,7 @@ def score_titulo(titulo_de_la_filmacion):
     score = pelicula.iloc[0]['popularity']
     
     # Retornar el mensaje formateado
-    return f"La película '{titulo}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
+    return f"La película '{titulo.capitalize()}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
 
 
 def votos_titulo(titulo_de_la_filmacion):
@@ -113,7 +113,7 @@ def votos_titulo(titulo_de_la_filmacion):
     
     # Validar si se encontró la película
     if pelicula.empty:
-        return f"No se encontró una película con el título '{titulo_de_la_filmacion}'."
+        return f"No se encontró una película con el título '{titulo_de_la_filmacion.capitalize()}'."
     
     # Obtener los valores necesarios
     titulo = pelicula.iloc[0]['title']
@@ -123,10 +123,10 @@ def votos_titulo(titulo_de_la_filmacion):
     
     # Verificar la condición de 2000 valoraciones
     if votos < 2000:
-        return f"La película '{titulo}' no cumple con el mínimo de 2000 valoraciones. No se devuelve información adicional."
+        return f"La película '{titulo.capitalize()}' no cumple con el mínimo de 2000 valoraciones. No se devuelve información adicional."
     
     # Retornar el mensaje formateado
-    return f"La película '{titulo}' fue estrenada en el año {int(anio)}. La misma cuenta con un total de {int(votos)} valoraciones, con un promedio de {promedio:.2f}."
+    return f"La película '{titulo.capitalize()}' fue estrenada en el año {int(anio)}. La misma cuenta con un total de {int(votos)} valoraciones, con un promedio de {promedio:.2f}."
 
 
 
@@ -171,7 +171,7 @@ def get_actor(nombre_actor):
     
     # Retornar el mensaje formateado
     return (
-        f"El actor {nombre_actor} ha participado de {cantidad_peliculas} cantidad de filmaciones, "
+        f"El actor {nombre_actor.capitalize()} ha participado de {cantidad_peliculas} cantidad de filmaciones, "
         f"el mismo ha conseguido un retorno de {total_return:.2f} con un promedio de {promedio_retorno:.2f} por filmación."
     )
 
@@ -195,7 +195,7 @@ def get_director(nombre_director):
     
     # Validar si el director tiene películas
     if director_films.empty:
-        return f"No se encontró al director '{nombre_director}' en el dataset."
+        return f"No se encontró al director '{nombre_director.capitalize()}' en el dataset."
     
     # Hacer el join con el dataset de películas por 'id'
     director_films = director_films.merge(
@@ -220,7 +220,7 @@ def get_director(nombre_director):
     
     # Formatear la respuesta
     return (
-        f"El director {nombre_director} ha tenido un éxito total medido en un retorno de {total_return:.2f}.\n"
+        f"El director {nombre_director.capitalize()} ha tenido un éxito total medido en un retorno de {total_return:.2f}.\n"
         "Detalle de sus películas:\n" + "\n".join(peliculas_info)
     )
 
@@ -239,10 +239,6 @@ def recomendacion(titulo: str):
 
     # Normalizar el título ingresado
     titulo_normalizado = eliminar_acentos(titulo.lower().strip())
-    print(f"Título normalizado ingresado: {titulo_normalizado}")
-
-    # Verificar los títulos normalizados en el dataset
-    print(movies['normalized_title'].head())
 
     # Buscar el índice de la película usando el título normalizado
     try:
@@ -250,17 +246,25 @@ def recomendacion(titulo: str):
     except IndexError:
         return [{"error": f"La película '{titulo}' no se encuentra en el dataset."}]
 
+    # Colección de la película de referencia
+    coleccion_referencia = movies.iloc[idx]['collection']
+
     # Calcular la similitud de coseno entre la película seleccionada y todas las demás
-    similitudes = cosine_similarity(features[idx].reshape(1, -1), features)
+    similitudes = cosine_similarity(features[idx].reshape(1, -1), features).flatten()
+
+    # Ajustar la similitud con un peso adicional si las colecciones son exactamente iguales
+    for i in range(len(similitudes)):
+        if movies.iloc[i]['collection'] == coleccion_referencia:
+            similitudes[i] *= 1.5
 
     # Ordenar las películas por similitud (exceptuando la película actual)
-    indices_similares = similitudes[0].argsort()[::-1][1:6]  # Toma las 5 más similares, excluyendo la misma
+    indices_similares = similitudes.argsort()[::-1][1:6]  # Eliminar la película actual
 
     # Generar la lista de recomendaciones
     recomendaciones = [
         {
             "titulo": movies.iloc[i]['title'],
-            "similitud": round(float(similitudes[0][i]), 3)
+            "similitud": round(float(similitudes[i]), 3)
         }
         for i in indices_similares
     ]

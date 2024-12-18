@@ -4,6 +4,7 @@ import ast
 import os
 import numpy as np # type: ignore
 from sklearn.metrics.pairwise import cosine_similarity # type: ignore
+from sklearn.preprocessing import MultiLabelBinarizer
 
 
 # Función para eliminar acentos
@@ -234,6 +235,9 @@ def recomendacion(titulo: str):
     movies = pd.read_csv(movies_path)
     features = np.load(movies_features_path)['arr_0']
 
+    # Determinar el índice final de los géneros en la matriz
+    genres_end_idx = features.shape[1] - 2  # Asumiendo que las últimas dos columnas son colección y popularidad
+
     # Crear una columna de títulos normalizados en el dataset
     movies['normalized_title'] = movies['title'].apply(lambda x: eliminar_acentos(x.lower().strip()))
 
@@ -246,27 +250,34 @@ def recomendacion(titulo: str):
     except IndexError:
         return [{"error": f"La película '{titulo}' no se encuentra en el dataset."}]
 
+    # Calcular la similitud de géneros
+    similitud_generos = cosine_similarity(features[idx, :genres_end_idx].reshape(1, -1), features[:, :genres_end_idx]).flatten()
+
+    # Calcular la similitud general
+    similitudes = cosine_similarity(features[idx].reshape(1, -1), features).flatten()
+
+    # Ajustar la similitud general con la similitud de géneros
+    similitud_total = 0.7 * similitud_generos + 0.3 * similitudes
+
     # Colección de la película de referencia
     coleccion_referencia = movies.iloc[idx]['collection']
 
-    # Calcular la similitud de coseno entre la película seleccionada y todas las demás
-    similitudes = cosine_similarity(features[idx].reshape(1, -1), features).flatten()
-
-    # Ajustar la similitud con un peso adicional si las colecciones son exactamente iguales
-    for i in range(len(similitudes)):
-        if movies.iloc[i]['collection'] == coleccion_referencia:
-            similitudes[i] *= 1.5
+    # Ajustar el peso de las colecciones
+    for i in range(len(similitud_total)):
+        if movies.iloc[i]['collection'] != 'No Collection' and movies.iloc[i]['collection'] == coleccion_referencia:
+            similitud_total[i] *= 1.5
 
     # Ordenar las películas por similitud (exceptuando la película actual)
-    indices_similares = similitudes.argsort()[::-1][1:6]  # Eliminar la película actual
+    indices_similares = similitud_total.argsort()[::-1][1:6]
 
     # Generar la lista de recomendaciones
     recomendaciones = [
         {
             "titulo": movies.iloc[i]['title'],
-            "similitud": round(float(similitudes[i]), 3)
+            "similitud": round(float(similitud_total[i]), 3)
         }
         for i in indices_similares
     ]
 
     return recomendaciones
+

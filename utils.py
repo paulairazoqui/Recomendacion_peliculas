@@ -234,9 +234,6 @@ def recomendacion(titulo: str):
     movies = pd.read_csv(movies_path)
     features = np.load(movies_features_path)['arr_0']
 
-    # Determinar el índice final de los géneros en la matriz
-    genres_end_idx = features.shape[1] - 2  # Asumiendo que las últimas dos columnas son colección y popularidad
-
     # Crear una columna de títulos normalizados en el dataset
     movies['normalized_title'] = movies['title'].apply(lambda x: eliminar_acentos(x.lower().strip()))
 
@@ -249,22 +246,23 @@ def recomendacion(titulo: str):
     except IndexError:
         return [{"error": f"La película '{titulo}' no se encuentra en el dataset."}]
 
+    # Separar índices de las características: géneros, colección y popularidad
+    num_genres = features.shape[1] - 2  # las últimas dos columnas son collection_scaled y popularity_scaled
+    genres = features[:, :num_genres]
+    collection_scaled = features[:, num_genres]
+    popularity_scaled = features[:, num_genres + 1]
+
     # Calcular la similitud de géneros
-    similitud_generos = cosine_similarity(features[idx, :genres_end_idx].reshape(1, -1), features[:, :genres_end_idx]).flatten()
+    similitud_generos = cosine_similarity(genres[idx].reshape(1, -1), genres).flatten()
 
-    # Calcular la similitud general
-    similitudes = cosine_similarity(features[idx].reshape(1, -1), features).flatten()
+    # Calcular la similitud de colección
+    similitud_coleccion = cosine_similarity(collection_scaled[idx].reshape(1, -1), collection_scaled.reshape(-1, 1)).flatten()
 
-    # Ajustar la similitud general con la similitud de géneros
-    similitud_total = 0.7 * similitud_generos + 0.3 * similitudes
+    # Calcular la similitud de popularidad
+    similitud_popularidad = cosine_similarity(popularity_scaled[idx].reshape(1, -1), popularity_scaled.reshape(-1, 1)).flatten()
 
-    # Colección de la película de referencia
-    coleccion_referencia = movies.iloc[idx]['collection']
-
-    # Ajustar el peso de las colecciones
-    for i in range(len(similitud_total)):
-        if movies.iloc[i]['collection'] != 'No Collection' and movies.iloc[i]['collection'] == coleccion_referencia:
-            similitud_total[i] *= 1.5
+    # Asignar y combinar las similitudes con pesos
+    similitud_total = (0.6 * similitud_generos) + (0.3 * similitud_coleccion) + (0.1 * similitud_popularidad)
 
     # Ordenar las películas por similitud (exceptuando la película actual)
     indices_similares = similitud_total.argsort()[::-1][1:6]

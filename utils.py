@@ -18,7 +18,7 @@ def cantidad_filmaciones_mes(Mes):
     # Ruta relativa a los datasets
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
     
-    # Carga de los datasets
+    # Cargar los datasets
     movies = pd.read_csv(movies_path)
         
     # Diccionario para convertir el mes en español al número correspondiente
@@ -47,7 +47,7 @@ def cantidad_filmaciones_dia(Dia):
     # Ruta relativa a los datasets
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
     
-    # Carga de los datasets
+    # Cargar los datasets
     movies = pd.read_csv(movies_path)
     
     # Diccionario para convertir el día en español al número correspondiente
@@ -76,7 +76,8 @@ def cantidad_filmaciones_dia(Dia):
 def score_titulo(titulo_de_la_filmacion):
     # Ruta relativa a los datasets
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
-    # Carga de los datasets
+    
+    # Cargar los datasets
     movies = pd.read_csv(movies_path)
     
     # Normalizar el titulo ingresado
@@ -102,7 +103,7 @@ def votos_titulo(titulo_de_la_filmacion):
     # Ruta relativa a los datasets
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
     
-    # Carga de los datasets
+    # Carga los datasets
     movies = pd.read_csv(movies_path)
 
     # Normalizar el título
@@ -135,7 +136,7 @@ def get_actor(nombre_actor):
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
     credits_path = os.path.join('Datasets', 'reduced_credits.csv')
 
-    # Carga de los datasets
+    # Cargar los datasets
     movies = pd.read_csv(movies_path)
     credits = pd.read_csv(credits_path)
 
@@ -178,11 +179,11 @@ def get_actor(nombre_actor):
 
 
 def get_director(nombre_director):
-        # Ruta relativa a los datasets
+    # Ruta relativa a los datasets
     movies_path = os.path.join('Datasets', 'transformed_movies.csv')
     credits_path = os.path.join('Datasets', 'reduced_credits.csv')
 
-    # Carga de los datasets
+    # Cargar los datasets
     movies = pd.read_csv(movies_path)
     credits = pd.read_csv(credits_path)
 
@@ -262,7 +263,7 @@ def recomendacion(titulo: str):
     similitud_popularidad = cosine_similarity(popularity_scaled[idx].reshape(1, -1), popularity_scaled.reshape(-1, 1)).flatten()
 
     # Asignar y combinar las similitudes con pesos
-    similitud_total = (0.6 * similitud_generos) + (0.3 * similitud_coleccion) + (0.1 * similitud_popularidad)
+    similitud_total = (0.7 * similitud_generos) + (0.2 * similitud_coleccion) + (0.1 * similitud_popularidad)
 
     # Ordenar las películas por similitud (exceptuando la película actual)
     indices_similares = similitud_total.argsort()[::-1][1:6]

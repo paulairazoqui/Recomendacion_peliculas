@@ -256,8 +256,8 @@ def recomendacion(titulo: str):
     # Calcular la similitud de géneros
     similitud_generos = cosine_similarity(genres[idx].reshape(1, -1), genres).flatten()
 
-    # Calcular la similitud de colección
-    similitud_coleccion = cosine_similarity(collection_scaled[idx].reshape(1, -1), collection_scaled.reshape(-1, 1)).flatten()
+    # Evaluar pertenencia a colección
+    similitud_coleccion = (collection_scaled == collection_scaled[idx]).astype(int)
 
     # Calcular la similitud de popularidad
     similitud_popularidad = cosine_similarity(popularity_scaled[idx].reshape(1, -1), popularity_scaled.reshape(-1, 1)).flatten()

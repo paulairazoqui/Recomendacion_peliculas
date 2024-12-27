@@ -22,7 +22,7 @@ Este proyecto implementa un sistema de recomendación de películas que permite 
 
 ## Descripción del Proyecto
 
-El sistema se desarrolló desde cero, abarcando desde la recolección y transformación de datos hasta la implementación de un modelo de recomendación funcional. Se procesaron datos de películas para ofrecer funcionalidades que incluyen conteo de filmaciones por mes y día, puntuaciones y votos de títulos, información sobre actores y directores, y recomendaciones basadas en similitudes.
+El sistema se desarrolló abarcando desde la recolección y transformación de datos hasta la implementación de un modelo de recomendación funcional. Se procesaron datos de películas para ofrecer funcionalidades que incluyen conteo de filmaciones por mes y día, puntuaciones y votos de títulos, información sobre actores y directores, y recomendaciones basadas en similitudes.
 
 ---
 

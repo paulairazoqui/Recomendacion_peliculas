@@ -11,8 +11,6 @@
 - [Datos y Fuentes](#datos-y-fuentes)
 - [Metodología](#metodología)
 - [Resultados y Conclusiones](#resultados-y-conclusiones)
-- [Contribución y Colaboración](#contribución-y-colaboración)
-- [Licencia](#licencia)
 
 ---
 

@@ -88,7 +88,7 @@ def score_titulo(titulo_de_la_filmacion):
     
     # Validar si se encontró la película
     if pelicula.empty:
-        return f"No se encontró una película con el título '{titulo_de_la_filmacion.capitalize()}'."
+        return f"No se encontró una película con el título '{titulo_de_la_filmacion.title()}'."
     
     # Obtener los valores de título, año y score
     titulo = pelicula.iloc[0]['title']
@@ -96,7 +96,7 @@ def score_titulo(titulo_de_la_filmacion):
     score = pelicula.iloc[0]['popularity']
     
     # Retornar el mensaje formateado
-    return f"La película '{titulo.capitalize()}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
+    return f"La película '{titulo.title()}' fue estrenada en el año {int(anio)} con un score/popularidad de {score:.2f}."
 
 
 def votos_titulo(titulo_de_la_filmacion):
@@ -124,10 +124,10 @@ def votos_titulo(titulo_de_la_filmacion):
     
     # Verificar la condición de 2000 valoraciones
     if votos < 2000:
-        return f"La película '{titulo.capitalize()}' no cumple con el mínimo de 2000 valoraciones. No se devuelve información adicional."
+        return f"La película '{titulo.title()}' no cumple con el mínimo de 2000 valoraciones. No se devuelve información adicional."
     
     # Retornar el mensaje formateado
-    return f"La película '{titulo.capitalize()}' fue estrenada en el año {int(anio)}. La misma cuenta con un total de {int(votos)} valoraciones, con un promedio de {promedio:.2f}."
+    return f"La película '{titulo.title()}' fue estrenada en el año {int(anio)}. La misma cuenta con un total de {int(votos)} valoraciones, con un promedio de {promedio:.2f}."
 
 
 
@@ -172,7 +172,7 @@ def get_actor(nombre_actor):
     
     # Retornar el mensaje formateado
     return (
-        f"El actor {nombre_actor.capitalize()} ha participado de {cantidad_peliculas} cantidad de filmaciones, "
+        f"El actor {nombre_actor.title()} ha participado de {cantidad_peliculas} cantidad de filmaciones, "
         f"el mismo ha conseguido un retorno de {total_return:.2f} con un promedio de {promedio_retorno:.2f} por filmación."
     )
 
@@ -221,7 +221,7 @@ def get_director(nombre_director):
     
     # Formatear la respuesta
     return (
-        f"El director {nombre_director.capitalize()} ha tenido un éxito total medido en un retorno de {total_return:.2f}.\n"
+        f"El director {nombre_director.title()} ha tenido un éxito total medido en un retorno de {total_return:.2f}.\n"
         "Detalle de sus películas:\n" + "\n".join(peliculas_info)
     )
 
